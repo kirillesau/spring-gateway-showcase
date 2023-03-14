@@ -1,0 +1,13 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: test1
+          uri: lb://demo-service
+          predicates:
+            - Path=//test/**
+          filters:
+            - RewritePath=/test/(?<path>.*), /$\{path}
+      discovery:
+        locator:
+          enabled: true
