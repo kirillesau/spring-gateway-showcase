@@ -28,3 +28,31 @@ jobs:
           context: .
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}:latest
+  docker-arm:
+    name: Setting up the project with cache and pod- & bundle install
+    runs-on: m1max
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+        with:
+          clean: false
+      - name: Install GEM dependencies
+        run: arch -arm64 gem install bundler
+
+#      - name: Checkout
+#        uses: actions/checkout@v3
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Build and push
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/arm-${{ github.event.repository.name }}:latest
