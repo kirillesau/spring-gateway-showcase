@@ -1,3 +1,11 @@
 spring:
   application:
     name: gateway-service
+  cloud:
+    consul:
+      config:
+        enabled: true
+        defaultContext: defaults
+        prefixes: config
+        format: yaml
+        data-key: application.yml
