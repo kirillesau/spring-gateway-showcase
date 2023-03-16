@@ -1,13 +1,37 @@
 spring:
   cloud:
+    loadbalancer:
+      ribbon:
+        enabled: false
+    consul:
+      discovery:
+        enabled: true
+        #Nur Services, die den Health-Check ueberstehen
+        query-passing: true
+
     gateway:
       routes:
         - id: test1
-          uri: lb://demo-service
+          uri: lb://spring-demo-application
           predicates:
-            - Path=//test/**
-          filters:
-            - RewritePath=/test/(?<path>.*), /$\{path}
+            - Path=/book/**
+#          filters:
+#            - RewritePath=/test/(?<path>.*), /$\{path}
       discovery:
         locator:
           enabled: true
+      globalcors:
+        cors-configurations:
+          '[**]':
+            allowedOrigins: "http://localhost:3000"
+            allowedHeaders:
+              - "*"
+            allowedMethods:
+              - "GET"
+              - "POST"
+              - "OPTIONS"
+      default-filters:
+        - name: Retry
+          args:
+            retries: 3
+            methods: GET,POST
