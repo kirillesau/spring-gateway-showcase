@@ -11,12 +11,20 @@ spring:
 
     gateway:
       routes:
-        - id: test1
+        - id: book-routing
           uri: lb://spring-demo-application
           predicates:
             - Path=/book/**
-#          filters:
-#            - RewritePath=/test/(?<path>.*), /$\{path}
+        - id: test-book-routing
+          uri: lb://spring-demo-application
+          predicates:
+            - Path=/test/book/**
+          filters:
+            - RewritePath=/test/(?<path>.*), /$\{path}
+        - id: demo-routing
+          uri: lb://spring-demo-application
+          predicates:
+            - Path=/demo/**
       discovery:
         locator:
           enabled: true
